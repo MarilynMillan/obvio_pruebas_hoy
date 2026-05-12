@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_task_kanban_inherited_security_roles" model="ir.ui.view">
+        <field name="name">project.enterprise.task.kanban.security.roles</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project_enterprise.view_task_kanban_inherited"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="js_class">project_security_roles_task_kanban</attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_project_form_project_inherit" model="ir.ui.view">
+        <field name="name">project.project.form.inherit</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="edit">user_id == uid or context.get('uid') == 1</attribute>
+            </xpath>
+
+
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="readonly">user_id != uid and context.get('uid') != 1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_task_form2_inherit_readonly_pm" model="ir.ui.view">
+        <field name="name">project.task.form.readonly.pm</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="edit">project_id.user_id == uid or context.get('uid') == 1</attribute>
+                <attribute name="delete">project_id.user_id == uid or context.get('uid') == 1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_project_form_create_inherit" model="ir.ui.view">
+        <field name="name">project.project.form.create.inherit</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.project_project_view_form_simplified"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="create">has_group('project.group_project_manager') or context.get('uid') == 1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

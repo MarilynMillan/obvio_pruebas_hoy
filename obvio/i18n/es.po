@@ -1,0 +1,1068 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* obvio
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-23 03:07+0000\n"
+"PO-Revision-Date: 2026-04-23 03:07+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__acces_image
+msgid "Access Image"
+msgstr "Imagen de acceso"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_equipment_type__alias_name
+#: model:ir.model.fields,field_description:obvio.field_type_project__alias_name
+msgid "Alias"
+msgstr "Alias"
+
+#. module: obvio
+#: model:ir.model,name:obvio.model_account_analytic_account
+msgid "Analytic Account"
+msgstr "Cuenta analítica"
+
+#. module: obvio
+#: model:ir.model,name:obvio.model_account_analytic_plan
+msgid "Analytic Plans"
+msgstr "Planes analíticos:"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_account_setup_bank_manual_config__pdf_attachment
+#: model:ir.model.fields,field_description:obvio.field_res_partner_bank__pdf_attachment
+msgid "Archive PDF"
+msgstr "Adjuntar PDF Bancario"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__image
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image__image_pdf
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_hardware__image_pdf
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_technical__image_pdf
+msgid "Archivo"
+msgstr "Archivo"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_account_setup_bank_manual_config__pdf_filename
+#: model:ir.model.fields,field_description:obvio.field_res_partner_bank__pdf_filename
+msgid "Attach Bank PDF"
+msgstr "Adjuntar PDF del banco"
+
+#. module: obvio
+#: model:ir.model,name:obvio.model_ir_attachment
+msgid "Attachment"
+msgstr "Archivo adjunto"
+
+#. module: obvio
+#: model:ir.model,name:obvio.model_res_partner_bank
+msgid "Bank Accounts"
+msgstr "Cuentas bancarias"
+
+#. module: obvio
+#: model:ir.model.fields,help:obvio.field_res_partner__customer_is
+#: model:ir.model.fields,help:obvio.field_res_users__customer_is
+msgid "Check if this contact is a customer"
+msgstr "Marque si este contacto es un cliente"
+
+#. module: obvio
+#: model:ir.model.fields,help:obvio.field_res_partner__is_operator
+#: model:ir.model.fields,help:obvio.field_res_users__is_operator
+msgid "Check if this contact is an operator"
+msgstr "Marque si este contacto es un operador"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_zone_tienda__tienda
+#: model:ir.model.fields,field_description:obvio.field_zone_ubication__zone
+msgid "Code"
+msgstr "Código"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__comando_information
+msgid "Comando Information"
+msgstr "Información de comando"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_equipment_type__note
+#: model:ir.model.fields,field_description:obvio.field_type_project__note
+msgid "Comment"
+msgstr "Comentario"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_equipment_type__company_id
+#: model:ir.model.fields,field_description:obvio.field_project_project__company_id
+#: model:ir.model.fields,field_description:obvio.field_type_project__company_id
+msgid "Company"
+msgstr "Compañía"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__date_service_completo
+#: model:ir.model.fields,field_description:obvio.field_project_project__completion_date
+msgid "Completion Date"
+msgstr "Fecha de finalización"
+
+#. module: obvio
+#: model:ir.model,name:obvio.model_res_partner
+msgid "Contact"
+msgstr "Contacto"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__contact_person
+msgid "Contact Person"
+msgstr "Persona de contacto"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__contract
+msgid "Contract"
+msgstr "Contrato"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_maintenance_equipment_form_inherit
+msgid "Contract Info:"
+msgstr "Información del contrato:"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__zona_id
+#: model:ir.model.fields,field_description:obvio.field_project_zone__country_id
+#: model:ir.model.fields,field_description:obvio.field_zone_ubication__zone_id
+#: model:ir.ui.menu,name:obvio.menu_project_zones
+msgid "Country"
+msgstr "País"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_project_zone_form
+#: model_terms:ir.ui.view,arch_db:obvio.view_project_zone_tree
+msgid "Country of the Project"
+msgstr "País del Proyecto"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__create_equipment
+msgid "Create equipment"
+msgstr "Crear equipo"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_project_form_inherit
+msgid "Create maintenance team"
+msgstr "Crear equipo de mantenimiento"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_equipment_type__create_uid
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image__create_uid
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_hardware__create_uid
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_technical__create_uid
+#: model:ir.model.fields,field_description:obvio.field_project_zone__create_uid
+#: model:ir.model.fields,field_description:obvio.field_type_project__create_uid
+#: model:ir.model.fields,field_description:obvio.field_zone_tienda__create_uid
+#: model:ir.model.fields,field_description:obvio.field_zone_ubication__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_equipment_type__create_date
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image__create_date
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_hardware__create_date
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_technical__create_date
+#: model:ir.model.fields,field_description:obvio.field_project_zone__create_date
+#: model:ir.model.fields,field_description:obvio.field_type_project__create_date
+#: model:ir.model.fields,field_description:obvio.field_zone_tienda__create_date
+#: model:ir.model.fields,field_description:obvio.field_zone_ubication__create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__partner_id
+#: model:ir.model.fields,field_description:obvio.field_res_partner__customer_is
+#: model:ir.model.fields,field_description:obvio.field_res_users__customer_is
+msgid "Customer"
+msgstr "Cliente"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__device_router
+msgid "Device/Router"
+msgstr "Dispositivo/Router"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_type_project_form
+msgid "Digital Project"
+msgstr "Proyecto Digital"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_equipment_type__display_name
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image__display_name
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_hardware__display_name
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_technical__display_name
+#: model:ir.model.fields,field_description:obvio.field_project_zone__display_name
+#: model:ir.model.fields,field_description:obvio.field_type_project__display_name
+#: model:ir.model.fields,field_description:obvio.field_zone_tienda__display_name
+#: model:ir.model.fields,field_description:obvio.field_zone_ubication__display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_maintenance_equipment_form_inherit
+msgid "Display Technical Info-"
+msgstr "Mostrar información técnica-"
+
+#. module: obvio
+#: model:ir.model,name:obvio.model_documents_document
+msgid "Document"
+msgstr "Documento"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.project_project_view_form_simplified_inherit_partner_visible
+msgid "Ej: B, C... (No 'A')"
+msgstr "Ej: B, C... (No 'A')"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_maintenance_equipment_form_inherit
+msgid "Endpoint location"
+msgstr "Ubicación del endpoint"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image__equipment_id
+msgid "Equipment"
+msgstr "Equipo"
+
+#. module: obvio
+#: model:ir.actions.act_window,name:obvio.action_equipment_type
+#: model:ir.ui.menu,name:obvio.menu_equipment_type
+#: model_terms:ir.ui.view,arch_db:obvio.view_equipment_type_form
+#: model_terms:ir.ui.view,arch_db:obvio.view_equipment_type_tree
+msgid "Equipment Type"
+msgstr "Tipo de equipo"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__maintenance_equipment_ids
+msgid "Equipment creation"
+msgstr "Creación de equipos"
+
+#. module: obvio
+#: model:ir.model,name:obvio.model_equipment_type
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__type_equipment
+msgid "Equipment type"
+msgstr "Tipo de proyecto"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__date_start
+msgid "Expiration Date"
+msgstr "Fecha de vencimiento"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image__date_imagen
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_hardware__date_imagen
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_technical__date_imagen
+msgid "Fecha y Hora"
+msgstr "Fecha y Hora"
+
+#. module: obvio
+#: model_terms:ir.actions.act_window,help:obvio.action_type_project
+msgid "Gestina los tipos de proyecto"
+msgstr "Gestiona los tipos de proyecto"
+
+#. module: obvio
+#: model_terms:ir.actions.act_window,help:obvio.action_project_zone
+msgid "Gestiona País del proyecto."
+msgstr "Gestiona el país del proyecto."
+
+#. module: obvio
+#: model_terms:ir.actions.act_window,help:obvio.action_zone_ubication
+msgid "Gestiona la localidad del proyecto"
+msgstr "Gestiona la localidad del proyecto"
+
+#. module: obvio
+#: model_terms:ir.actions.act_window,help:obvio.action_zone_tienda
+msgid "Gestiona las Tiendas del proyecto"
+msgstr "Gestiona las tiendas del proyecto"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_hardware__hardware_id
+msgid "Hardware"
+msgstr "Hardware"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_maintenance_equipment_form_inherit
+msgid "Hardware Access Info-"
+msgstr "Información de acceso al hardware-"
+
+#. module: obvio
+#: model:ir.model.fields.selection,name:obvio.selection__project_project__priority__2
+msgid "High"
+msgstr "Alto"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_equipment_type__id
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__ide
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image__id
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_hardware__id
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_technical__id
+#: model:ir.model.fields,field_description:obvio.field_project_zone__id
+#: model:ir.model.fields,field_description:obvio.field_type_project__id
+#: model:ir.model.fields,field_description:obvio.field_zone_tienda__id
+#: model:ir.model.fields,field_description:obvio.field_zone_ubication__id
+msgid "ID"
+msgstr "ID"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__ip_addres
+msgid "IP Address"
+msgstr "Dirección IP"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_zone__code
+msgid "ISO code"
+msgstr "Código ISO"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__internet_service_obvio
+msgid "ISP Internet Service Provider By Obvio"
+msgstr "ISP proveedor de internet por Obvio"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__internet_service
+msgid "ISP Internet Service Provider by Client"
+msgstr "ISP proveedor de internet por el cliente"
+
+#. module: obvio
+#: model:ir.model.fields,help:obvio.field_project_project__is_template
+msgid "If checked, this project can be used as a template."
+msgstr "Si está marcado, este proyecto puede usarse como plantilla."
+
+#. module: obvio
+#: model:ir.model.fields,help:obvio.field_account_analytic_plan__show_on_all_companies
+msgid ""
+"If enabled, this root analytic plan remains visible on projects for every "
+"company."
+msgstr ""
+"Si está habilitado, este plan analítico raíz permanece visible en los "
+"proyectos de todas las compañías."
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image__image
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_hardware__image
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_technical__image
+msgid "Imagen"
+msgstr "Imagen"
+
+#. module: obvio
+#: model:ir.model,name:obvio.model_maintenance_equipment_image
+msgid "Imágenes adjuntas a los equipos de mantenimiento"
+msgstr "Imágenes adjuntas a los equipos de mantenimiento"
+
+#. module: obvio
+#: model:ir.model,name:obvio.model_maintenance_equipment_image_hardware
+msgid "Imágenes adjuntas a los equipos de mantenimiento en hardware"
+msgstr "Imágenes adjuntas a los equipos de mantenimiento en hardware"
+
+#. module: obvio
+#: model:ir.model,name:obvio.model_maintenance_equipment_image_technical
+msgid "Imágenes adjuntas a los equipos de mantenimiento en technical"
+msgstr "Imágenes adjuntas a los equipos de mantenimiento en técnico"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_maintenance_equipment_form_inherit
+msgid "Internet Conectivity-"
+msgstr "Conectividad a Internet-"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__internet_provide
+msgid "Internet Provider"
+msgstr "Proveedor de internet"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__is_manager_custom
+msgid "Is Manager Custom"
+msgstr "Es manager personalizado"
+
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__is_template
+msgid "Is template"
+msgstr "Es plantilla"
+
+#. module: obvio
+#: model:ir.model,name:obvio.model_account_move
+msgid "Journal Entry"
+msgstr "Asiento contable"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_equipment_type__write_uid
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image__write_uid
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_hardware__write_uid
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_technical__write_uid
+#: model:ir.model.fields,field_description:obvio.field_project_zone__write_uid
+#: model:ir.model.fields,field_description:obvio.field_type_project__write_uid
+#: model:ir.model.fields,field_description:obvio.field_zone_tienda__write_uid
+#: model:ir.model.fields,field_description:obvio.field_zone_ubication__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_equipment_type__write_date
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image__write_date
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_hardware__write_date
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_technical__write_date
+#: model:ir.model.fields,field_description:obvio.field_project_zone__write_date
+#: model:ir.model.fields,field_description:obvio.field_type_project__write_date
+#: model:ir.model.fields,field_description:obvio.field_zone_tienda__write_date
+#: model:ir.model.fields,field_description:obvio.field_zone_ubication__write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: obvio
+#: model:ir.actions.act_window,name:obvio.action_zone_ubication
+msgid "Localidad"
+msgstr "Localidad"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__ubication_id
+#: model:ir.model.fields,field_description:obvio.field_project_zone__zone_ubication_ids
+#: model:ir.model.fields,field_description:obvio.field_zone_tienda__ubication_id
+#: model:ir.ui.menu,name:obvio.menu_zone_ubication
+#: model_terms:ir.ui.view,arch_db:obvio.view_zone_ubication_form
+#: model_terms:ir.ui.view,arch_db:obvio.view_zone_ubication_tree
+msgid "Location"
+msgstr "Ubicación"
+
+#. module: obvio
+#: model:ir.model.fields.selection,name:obvio.selection__project_project__priority__1
+msgid "Low"
+msgstr "Bajo"
+
+#. module: obvio
+#: model:ir.model,name:obvio.model_maintenance_equipment
+msgid "Maintenance Equipment"
+msgstr "Equipo de mantenimiento"
+
+#. module: obvio
+#: model_terms:ir.actions.act_window,help:obvio.action_equipment_type
+msgid "Manage equipment types"
+msgstr "Gestionar tipos de equipo"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_account_analytic_account__margin_percent
+msgid "Margin %"
+msgstr "Margen %"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__mode_especifique
+msgid "Model/Specifications"
+msgstr "Modelo/Especificaciones"
+
+#. module: obvio
+#: model:ir.model.fields,help:obvio.field_account_bank_statement_line__currency_usd_id
+#: model:ir.model.fields,help:obvio.field_account_move__currency_usd_id
+msgid "Moneda de referencia USD para cálculos internos."
+msgstr "Moneda de referencia USD para cálculos internos."
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_maintenance_equipment_form_inherit
+msgid "Monitoring Contract-"
+msgstr "Contrato de monitoreo-"
+
+#. module: obvio
+#: model:ir.model.fields,help:obvio.field_account_bank_statement_line__amount_untaxed_usd
+#: model:ir.model.fields,help:obvio.field_account_move__amount_untaxed_usd
+msgid "Monto total convertido a USD basado en la tasa de la factura."
+msgstr "Monto total convertido a USD basado en la tasa de la factura."
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__show_dss_tab
+msgid "Mostrar Pestaña DSS"
+msgstr "Mostrar Pestaña DSS"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_documents_document__name
+#: model:ir.model.fields,field_description:obvio.field_equipment_type__name
+#: model:ir.model.fields,field_description:obvio.field_type_project__name
+#: model:ir.model.fields,field_description:obvio.field_zone_tienda__name
+#: model:ir.model.fields,field_description:obvio.field_zone_ubication__name
+msgid "Name"
+msgstr "Nombre"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__network
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__network_2
+msgid "Network"
+msgstr "Red"
+
+#. module: obvio
+#. odoo-python
+#: code:addons/obvio/models/project_project.py:0
+msgid ""
+"No puedes modificar campos críticos en un proyecto activo. Contacta a un "
+"Manager."
+msgstr ""
+"No puedes modificar campos críticos en un proyecto activo. Contacta a un "
+"Manager."
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image__name
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_hardware__name
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_technical__name
+msgid "Nombre"
+msgstr "Nombre"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__name_equipment
+msgid "Nombre Equipo"
+msgstr "Nombre del equipo"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image__information
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_hardware__information
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_technical__information
+msgid "Nota"
+msgstr "Nota"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__operation
+#: model:ir.model.fields,field_description:obvio.field_project_project__partner_operator_id
+#: model:ir.model.fields,field_description:obvio.field_res_partner__is_operator
+#: model:ir.model.fields,field_description:obvio.field_res_users__is_operator
+msgid "Operator"
+msgstr "Operador"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_res_partner__codigo_operator
+#: model:ir.model.fields,field_description:obvio.field_res_users__codigo_operator
+msgid "Operator code"
+msgstr "Código de operador"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__operation_lan
+msgid "Operator´s Lan"
+msgstr "LAN del operador"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__operation_wifi
+msgid "Operator´s Wifi"
+msgstr "Wifi del operador"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__optional
+msgid "Optional"
+msgstr "Opcional"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__original_name
+msgid "Original name"
+msgstr "Nombre original"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__other_service
+msgid "Other Services"
+msgstr "Otros servicios"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__passwords_1
+msgid "Pass"
+msgstr "Clave"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__pass_internet
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__pass_internet_2
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__passwords_2
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__passwords_3
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__passwords_4
+msgid "Password"
+msgstr "Contraseña"
+
+#. module: obvio
+#: model:ir.actions.act_window,name:obvio.action_project_zone
+msgid "País"
+msgstr "Pais"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image__image_pdf_filename
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_hardware__image_pdf_filename
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_technical__image_pdf_filename
+msgid "Pdf Filename"
+msgstr "Nombre del archivo PDF"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__plan
+msgid "Plan"
+msgstr "Plan"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_project_form_create_inherit
+msgid "Planned Date"
+msgstr "Fecha planificada"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_maintenance_equipment_form_inherit
+msgid "Player Technical Info -"
+msgstr "Información técnica del reproductor -"
+
+#. module: obvio
+#. odoo-python
+#: code:addons/obvio/models/project_project.py:0
+msgid "Please make sure the template '%s', is the correct one."
+msgstr "Asegúrese de que la plantilla '%s' sea la correcta."
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__priority
+msgid "Prioridad"
+msgstr "Prioridad"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_project_tree_inherit
+msgid "Priority"
+msgstr "Prioridad"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__product_service
+msgid "Product Service"
+msgstr "Servicio del producto"
+
+#. module: obvio
+#: model:ir.model,name:obvio.model_project_project
+msgid "Project"
+msgstr "Proyecto"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_maintenance_equipment_form_inherit
+msgid "Project Manager"
+msgstr "Gerente de proyecto"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_zone_tienda_form
+#: model_terms:ir.ui.view,arch_db:obvio.view_zone_tienda_tree
+msgid "Project Shop"
+msgstr "Tienda del Proyecto"
+
+#. module: obvio
+#: model:ir.ui.menu,name:obvio.menu_project_type
+#: model_terms:ir.ui.view,arch_db:obvio.view_type_project_form
+#: model_terms:ir.ui.view,arch_db:obvio.view_type_project_tree
+msgid "Project Type"
+msgstr "Tipo de Proyecto"
+
+#. module: obvio
+#: model:ir.model,name:obvio.model_project_zone
+msgid "Project country"
+msgstr "País del proyecto"
+
+#. module: obvio
+#: model:ir.model,name:obvio.model_zone_ubication
+msgid "Project location"
+msgstr "Ubicación del proyecto"
+
+#. module: obvio
+#: model:ir.model,name:obvio.model_zone_tienda
+msgid "Project store"
+msgstr "Tienda del proyecto"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__template_project_id
+msgid "Project template"
+msgstr "Plantilla de proyecto"
+
+#. module: obvio
+#: model:ir.model,name:obvio.model_type_project
+#: model:ir.model.fields,field_description:obvio.field_project_project__type_project
+msgid "Project type"
+msgstr "Tipo de proyecto"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__providenci_1
+msgid "Provider 1"
+msgstr "Proveedor 1"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__providenci_2
+msgid "Provider 2"
+msgstr "Proveedor 2"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__login_web
+msgid "Provider Login Website"
+msgstr "Sitio web de inicio de sesión del proveedor"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__project_id
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__project_sequence
+msgid "Proyecto Asociado"
+msgstr "Proyecto asociado"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__hardware_image_ids
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__image_ids
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__technical_image_ids
+msgid "Registro"
+msgstr "Registro"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_maintenance_equipment_form_inherit
+msgid "Remote Desktop Info-"
+msgstr "Información de escritorio remoto-"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_equipment_type__user_id
+#: model:ir.model.fields,field_description:obvio.field_type_project__user_id
+msgid "Responsible"
+msgstr "Responsable"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__router_model
+msgid "Router Model"
+msgstr "Modelo del router"
+
+#. module: obvio
+#: model:ir.model.fields,help:obvio.field_maintenance_equipment__time_zome
+msgid "Selecciona la zona horaria de la localización"
+msgstr "Selecciona la zona horaria de la localización"
+
+#. module: obvio
+#: model:ir.model.fields,help:obvio.field_project_project__template_project_id
+msgid "Selecciona un proyecto marcado como plantilla."
+msgstr "Selecciona un proyecto marcado como plantilla."
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.project_project_view_form_simplified_inherit_partner_visible
+msgid "Seleccione Proyecto Padre"
+msgstr "Seleccione proyecto padre"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.project_project_view_form_simplified_inherit_partner_visible
+msgid "Select who to bill..."
+msgstr "Seleccione a quién facturar..."
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__sequence_new
+#: model_terms:ir.ui.view,arch_db:obvio.view_project_tree_inherit
+msgid "Sequence"
+msgstr "Secuencia"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__set_service
+msgid "Set on Device"
+msgstr "Configurar en el dispositivo"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__name_copy
+#: model:ir.model.fields,field_description:obvio.field_res_partner__alias_name
+#: model:ir.model.fields,field_description:obvio.field_res_users__alias_name
+msgid "Short name"
+msgstr "Nombre corto"
+
+#. module: obvio
+#: model:ir.model.fields,help:obvio.field_project_project__name_copy
+msgid "Short project name. Used in automatic naming."
+msgstr "Nombre corto del proyecto. Se utiliza en la nomenclatura automática."
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__sleeping_time
+msgid "Sleeping Time"
+msgstr "Tiempo de suspensión"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__date_expiration
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__date_service_start
+msgid "Starting Date"
+msgstr "Fecha de inicio"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__tienda_id
+#: model:ir.ui.menu,name:obvio.menu_zone_tienda
+msgid "Store"
+msgstr "Tiendas"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_zone_ubication__zone_tienda_ids
+msgid "Stores"
+msgstr "Tienda"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__parent_project_id
+msgid "Sub Project"
+msgstr "Subproyecto"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.project_project_view_form_simplified_inherit_partner_visible
+msgid "Sub-project configuration"
+msgstr "Configuración del subproyecto"
+
+#. module: obvio
+#: model:ir.model,name:obvio.model_project_task
+msgid "Task"
+msgstr "Tarea"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_technical__technical_id
+msgid "Technical"
+msgstr "Técnico"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__phone_name
+msgid "Tel Number"
+msgstr "Número de teléfono"
+
+#. module: obvio
+#. odoo-python
+#: code:addons/obvio/models/project_project.py:0
+msgid ""
+"The suffix 'A' is for the main project. For derived subprojects use B, C, "
+"D..."
+msgstr ""
+"El sufijo 'A' es para el proyecto principal. Para subproyectos derivados "
+"use B, C, D..."
+
+#. module: obvio
+#: model:ir.actions.act_window,name:obvio.action_zone_tienda
+msgid "Tienda"
+msgstr "Tienda"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_maintenance_equipment_form_inherit
+msgid "Time Zone Settings-"
+msgstr "Configuración de zona horaria-"
+
+#. module: obvio
+#: model:ir.actions.act_window,name:obvio.action_type_project
+msgid "Tipo de Proyecto"
+msgstr "Tipo de Proyecto"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_project_project_filter_inherit
+msgid "Tipo de proyecto"
+msgstr "Tipo de proyecto"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_task__name
+msgid "Title"
+msgstr "Título"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_move_bill_tree_inherit_usd
+#: model_terms:ir.ui.view,arch_db:obvio.view_move_tree_inherit_usd
+msgid "Total USD"
+msgstr "Total USD"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_account_bank_statement_line__amount_untaxed_usd
+#: model:ir.model.fields,field_description:obvio.field_account_move__amount_untaxed_usd
+msgid "Total(USD)"
+msgstr "Total (USD)"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_account_bank_statement_line__currency_usd_id
+#: model:ir.model.fields,field_description:obvio.field_account_move__currency_usd_id
+msgid "USD Currency"
+msgstr "Moneda USD"
+
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__user_id_1
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__user_internet
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__user_internet_1
+msgid "User"
+msgstr "Usuario"
+
+#. module: obvio
+#. odoo-python
+#: code:addons/obvio/models/project_project.py:0
+msgid "Validation"
+msgstr "Validación"
+
+#. module: obvio
+#: model:ir.model.fields.selection,name:obvio.selection__project_project__priority__3
+msgid "Very High"
+msgstr "Muy alto"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image__video_file
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_hardware__video_file
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_technical__video_file
+msgid "Video"
+msgstr "Video"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image__video_filename
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_hardware__video_filename
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment_image_technical__video_filename
+msgid "Video Filename"
+msgstr "Nombre del archivo de video"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_account_analytic_plan__show_on_all_companies
+msgid "Visible in all companies"
+msgstr "Visible en todas las compañías"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__make_time
+msgid "Wake up time"
+msgstr "Hora de activación"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__time_zome
+msgid "Zona Horaria"
+msgstr "Zona horaria"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__subproject_suffix
+msgid "fixed sub"
+msgstr "sub fijo"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_maintenance_equipment__imagen_avatar
+msgid "imagen"
+msgstr "imagen"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.view_equipment_type_form
+msgid "name ...."
+msgstr "Nombre ...."
+
+#. module: obvio
+#: model:ir.model.fields.selection,name:obvio.selection__project_project__priority__0
+msgid "very low"
+msgstr "Muy bajo"
+
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__is_subproject
+msgid "Main Project"
+msgstr "Proyecto principal"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__parent_project_id
+msgid "Subproject Suffix"
+msgstr "Proyecto principal"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__subproject_suffix
+msgid "Suffix"
+msgstr "Sufijo"
+
+#. module: obvio
+#: model:ir.model.fields,field_description:obvio.field_project_project__use_suffix
+msgid "Subproject"
+msgstr "Subproyecto"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.project_project_view_form_simplified_inherit_partner_visible
+msgid "Sub-project configuration"
+msgstr "Configuración de subproyecto"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.project_project_view_form_simplified_inherit_partner_visible
+msgid "Select main project"
+msgstr "Seleccione proyecto principal"
+
+#. module: obvio
+#: model_terms:ir.ui.view,arch_db:obvio.project_project_view_form_simplified_inherit_partner_visible
+msgid "E.g.: B, C... (Not 'A')"
+msgstr "Ej: B, C... (No 'A')"
+
+#. module: obvio
+#: code:addons/obvio/models/project_project.py:0
+#, python-format
+msgid "He suffix 'A' is for the main project. For derived subprojects use B, C, D..."
+msgstr "El sufijo 'A' es para el proyecto principal. Para subproyectos derivados use B, C, D..."
+
+
+#. module: obvio
+#: code:addons/obvio/models/project_project.py:0
+#, python-format
+msgid "A project cannot be Main Project and Subproject at the same time."
+msgstr "Un proyecto no puede ser Proyecto principal y Subproject al mismo tiempo."
+
+
+#. module: obvio
+#: code:addons/obvio/models/project_project.py:0
+#, python-format
+msgid "You must select a main project to create a subproject."
+msgstr "Debe seleccionar un proyecto principal para crear un subproyecto."
+
+#. module: obvio
+#: code:addons/obvio/models/project_project.py:0
+#, python-format
+msgid "The selected main project does not exist."
+msgstr "El proyecto principal seleccionado no existe."
+
+#. module: obvio
+#: code:addons/obvio/models/project_project.py:0
+#, python-format
+msgid "You must enter a suffix for the subproject. Example: B, C, D."
+msgstr "Debe ingresar un sufijo para el subproyecto. Ejemplo: B, C, D."
+
+#. module: obvio
+#: code:addons/obvio/models/project_project.py:0
+#, python-format
+msgid "The suffix 'A' is for the main project. Use B, C, D..."
+msgstr "El sufijo 'A' es para el proyecto principal. Use B, C, D..."
+
+#. module: obvio
+#: code:addons/obvio/models/project_project.py:0
+#, python-format
+msgid "The main project does not have an assigned template. Tasks cannot be copied to the subproject."
+msgstr "El proyecto principal no tiene una plantilla asignada. No se pueden copiar tareas al subproyecto."
+
+#. module: obvio
+#: code:addons/obvio/models/project_project.py:0
+#, python-format
+msgid "You must select a template, or the main project must have an assigned template."
+msgstr "Debe seleccionar una plantilla o el proyecto principal debe tener una plantilla asignada."
+
+
+#. module: obvio
+#: code:addons/obvio/models/project_project.py:0
+#, python-format
+msgid "You cannot uncheck a main project after it has been created."
+msgstr "No puedes desmarcar un proyecto principal después de creado."
+
+#. module: obvio
+#: code:addons/obvio/models/project_project.py:0
+#, python-format
+msgid "You cannot change the suffix after created because it is part of the project's sequential number."
+msgstr "No puedes cambiar el sufijo después de creado porque hace parte del correlativo del proyecto."
+
+#. module: obvio
+#: code:addons/obvio/models/project_project.py:0
+#, python-format
+msgid "You cannot remove the Subproject checkmark after you have selected a main project."
+msgstr "No puedes quitar la marca de Subproyecto después de haber seleccionado un proyecto principal."
+
+#. module: obvio
+#: code:addons/obvio/models/project_project.py:0
+#, python-format
+msgid "You must select a main project to create a subproject."
+msgstr "Debe seleccionar un proyecto principal para crear un subproyecto."
+
+#. module: obvio
+#: code:addons/obvio/models/project_project.py:0
+#, python-format
+msgid "DYou must enter a suffix for the subproject. Example: B, C, D."
+msgstr "Debe ingresar un sufijo para el subproyecto. Ejemplo: B, C, D."
+
+#. module: obvio
+#: code:addons/obvio/models/project_project.py:0
+#, python-format
+msgid "The suffix 'A' is for the main project. Use B, C, D..."
+msgstr "El sufijo 'A' es para el proyecto principal. Use B, C, D..."
+
+#. module: obvio
+#: code:addons/obvio/models/project_project.py:0
+#, python-format
+msgid "You cannot modify critical fields in an active project. Contact a Manager."
+msgstr "No puedes modificar campos críticos en un proyecto activo. Contacta a un Manager."
+
+#. module: obvio
+#: code:addons/obvio/models/project_project.py:0
+#, python-format
+msgid "The selected main project does not exist."
+msgstr "El proyecto principal seleccionado no existe."
+
+#. module: obvio
+#: code:addons/obvio/models/project_project.py:0
+#, python-format
+msgid "The main project does not have an assigned template.Tasks cannot be copied to the subproject."
+msgstr "El proyecto principal no tiene una plantilla asignada. No se pueden copiar tareas al subproyecto."
