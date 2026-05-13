@@ -441,38 +441,3 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
-
-    def read(self, fields=None, load='_classic_read'):
-        res = super(IrAttachment, self).read(fields=fields, load=load)
-        user = self.env.user
-
-        # Only restrict if the user is a project user but not a project manager
-        if not user.has_group("project.group_project_user") or user.has_group("project.group_project_manager") or self.env.su:
-            return res
-
-        sensitive_fields = {'datas', 'raw', 'url', 'checksum'}
-        fields_to_check = set(fields or []) & sensitive_fields if fields else sensitive_fields
-
-        if fields_to_check and res:
-            record_ids = [r['id'] for r in res if 'id' in r]
-            attachments = self.browse(record_ids)
-
-            # Filter attachments linked to project records
-            project_linked_attachments = attachments.filtered(
-                lambda a: a.res_model in self._PROJECT_GUARDED_MODELS and a.res_id
-            )
-
-            if project_linked_attachments:
-                # Identify which attachments the user is not allowed to manage
-                restricted_attachment_ids = {
-                    att.id for att in project_linked_attachments
-                    if not self._is_allowed_project_attachment_target(att.res_model, att.res_id, user)
-                }
-
-                if restricted_attachment_ids:
-                    for record in res:
-                        if record.get('id') in restricted_attachment_ids:
-                            for field in fields_to_check:
-                                if field in record:
-                                    record[field] = False
-        return res
