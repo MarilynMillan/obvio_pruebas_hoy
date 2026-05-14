@@ -1,0 +1,118 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* obvio_tracking
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-05-16 12:00+0000\n"
+"PO-Revision-Date: 2024-05-16 12:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: obvio_tracking
+#: code:addons/obvio_tracking/models/mail_message.py:0
+#, python-format
+msgid "🗑️ MESSAGE DELETED"
+msgstr ""
+
+#. module: obvio_tracking
+#: code:addons/obvio_tracking/models/mail_message.py:0
+#, python-format
+msgid "By %s on %s"
+msgstr ""
+
+#. module: obvio_tracking
+#: code:addons/obvio_tracking/models/mail_message.py:0
+#, python-format
+msgid "A stranger"
+msgstr ""
+
+#. module: obvio_tracking
+#: code:addons/obvio_tracking/models/mail_message.py:0
+#, python-format
+msgid "📅 Created: %s (%s)"
+msgstr ""
+
+#. module: obvio_tracking
+#: code:addons/obvio_tracking/models/mail_message.py:0
+#, python-format
+msgid "✅ Finished: %s (%s)"
+msgstr ""
+
+#. module: obvio_tracking
+#: code:addons/obvio_tracking/models/mail_message.py:0
+#, python-format
+msgid "Summary"
+msgstr ""
+
+#. module: obvio_tracking
+#: code:addons/obvio_tracking/models/mail_message.py:0
+#, python-format
+msgid "Note"
+msgstr ""
+
+#. module: obvio_tracking
+#: code:addons/obvio_tracking/models/mail_message.py:0
+#, python-format
+msgid "Deadline"
+msgstr ""
+
+#. module: obvio_tracking
+#: code:addons/obvio_tracking/models/mail_message.py:0
+#, python-format
+msgid "Assigned to"
+msgstr ""
+
+#. module: obvio_tracking
+#: code:addons/obvio_tracking/models/mail_message.py:0
+#, python-format
+msgid "Type of activity"
+msgstr ""
+
+#. module: obvio_tracking
+#: code:addons/obvio_tracking/models/mail_message.py:0
+#, python-format
+msgid "Empty"
+msgstr ""
+
+#. module: obvio_tracking
+#: code:addons/obvio_tracking/models/mail_message.py:0
+#, python-format
+msgid "📅 Created:"
+msgstr ""
+
+#. module: obvio_tracking
+#: code:addons/obvio_tracking/models/mail_message.py:0
+#, python-format
+msgid "✎ Updated:"
+msgstr ""
+
+#. module: obvio_tracking
+#: code:addons/obvio_tracking/models/mail_message.py:0
+#, python-format
+msgid "🗙 Canceled:"
+msgstr ""
+
+#. module: obvio_tracking
+#: code:addons/obvio_tracking/models/mail_message.py:0
+#, python-format
+msgid "Subject:"
+msgstr ""
+
+#. module: obvio_tracking
+#: code:addons/obvio_tracking/models/mail_message.py:0
+#, python-format
+msgid "Note:"
+msgstr ""
+
+#. module: obvio_tracking
+#: code:addons/obvio_tracking/models/mail_message.py:0
+#, python-format
+msgid "No note"
+msgstr ""
