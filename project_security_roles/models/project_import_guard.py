@@ -441,3 +441,28 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
+
+    def read(self, fields=None, load='_classic_read'):
+        res = super().read(fields=fields, load=load)
+        user = self.env.user
+        if not user.has_group("project.group_project_user") or user.has_group("project.group_project_manager"):
+            return res
+
+        for record in res:
+            attachment = self.browse(record.get('id'))
+            if not attachment:
+                continue
+
+            model_name = attachment.res_model
+            res_id = attachment.res_id
+
+            if model_name in self._PROJECT_GUARDED_MODELS:
+                if not self._is_allowed_project_attachment_target(model_name, res_id, user):
+                    if 'datas' in record:
+                        record['datas'] = False
+                    if 'raw' in record:
+                        record['raw'] = False
+                    if 'db_datas' in record:
+                        record['db_datas'] = False
+
+        return res
