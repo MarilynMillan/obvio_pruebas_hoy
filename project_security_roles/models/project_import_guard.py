@@ -441,3 +441,38 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
+
+class IrBinary(models.AbstractModel):
+    _inherit = "ir.binary"
+
+    def _record_to_stream(self, record, field_name, **kwargs):
+        if self.env.su:
+            return super()._record_to_stream(record, field_name, **kwargs)
+
+        is_download = kwargs.get("download") or self.env.context.get("download")
+
+        if is_download:
+            user = self.env.user
+            if user.has_group("project.group_project_user") and not user.has_group("project.group_project_manager"):
+                if record._name == "ir.attachment":
+                    model_name = record.res_model
+                    res_id = record.res_id
+
+                    if model_name in self.env["ir.attachment"]._PROJECT_GUARDED_MODELS:
+                        target = self.env[model_name].sudo().browse(res_id).exists()
+                        can_access = False
+
+                        if target:
+                            if model_name == "project.project":
+                                can_access = target.user_id == user
+                            elif model_name == "project.task":
+                                can_access = target.project_id.user_id == user or user in target.user_ids
+                            else:
+                                can_access = target.project_id.user_id == user
+
+                        if not can_access:
+                            raise AccessError(
+                                _("You can only download attachments on project records where you are the project responsible or task assignee.")
+                            )
+
+        return super()._record_to_stream(record, field_name, **kwargs)
