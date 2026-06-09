@@ -111,24 +111,55 @@ class MailActivity(models.Model):
             attachment_ids=attachment_ids
         )"""
 
+    def _get_html_layout(self, action_title, user_name, current_time, create_time, creator_name, current_uid, creator_uid, details_html, border_color):
+        creator_text = ""
+        if creator_uid != current_uid:
+            creator_text = f" por <strong>{creator_name}</strong>"
+
+        return f"""
+<div style="color: #444; font-family: sans-serif; font-size: 13px; border-left: 3px solid {border_color}; padding: 8px 12px; background-color: #f8f9fa; border-radius: 2px; margin-top: 5px;">
+    <div style="margin-bottom: 4px;">
+        {action_title} por <strong>{user_name}</strong> el {current_time}
+    </div>
+    <div style="margin-bottom: 4px; color: #666; font-size: 12px;">
+        📅 <strong>Creada:</strong> el {create_time}{creator_text}
+    </div>
+    <div style="margin-top: 6px;">
+        {details_html}
+    </div>
+</div>
+"""
+
     def _action_done(self, feedback=False, attachment_ids=None):
         user_tz = pytz.timezone(self.env.user.tz or 'UTC')
-        now_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+        current_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
 
         messages = []
 
-        if feedback:
-            messages.append(feedback)
-
         for activity in self:
-            create_time = fields.Datetime.to_datetime(
-                activity.create_date
-            ).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+            create_time = fields.Datetime.to_datetime(activity.create_date).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+            creator = getattr(activity, 'create_uid', None)
+            creator_name = getattr(creator, 'name', 'Unknown') if creator else 'Unknown'
+            creator_id = getattr(creator, 'id', None) if creator else None
 
-            messages.append(f"""
-    📅 Created: {create_time}
-    ✅ Finished: {now_time}
-    """)
+            details_html = ""
+            if feedback:
+                details_html += f"<div style='font-style: italic; color: #555;'>{feedback}</div>"
+
+            # Additional trace info about the task can be appended if needed.
+
+            formatted_message = self._get_html_layout(
+                action_title="✅ <strong>Actividad completada</strong>",
+                user_name=self.env.user.name,
+                current_time=current_time,
+                create_time=create_time,
+                creator_name=creator_name,
+                current_uid=self.env.user.id,
+                creator_uid=creator_id,
+                details_html=details_html,
+                border_color="#28a745" # Green
+            )
+            messages.append(formatted_message)
 
         full_message = "\n".join(messages)
 
@@ -203,18 +234,32 @@ class MailActivity(models.Model):
             if changes:
                 user_tz = pytz.timezone(self.env.user.tz or 'UTC')
                 current_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+                create_time = fields.Datetime.to_datetime(activity.create_date).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+
+                creator = getattr(activity, 'create_uid', None)
+                creator_name = getattr(creator, 'name', 'Unknown') if creator else 'Unknown'
+                creator_id = getattr(creator, 'id', None) if creator else None
+
+                changes_html = f"""
+                <ul style="margin: 6px 0 0 15px; padding: 0;">
+                    {''.join(changes)}
+                </ul>
+                """
+
+                formatted_message = self._get_html_layout(
+                    action_title="✎ <strong>Actividad editada</strong>",
+                    user_name=self.env.user.name,
+                    current_time=current_time,
+                    create_time=create_time,
+                    creator_name=creator_name,
+                    current_uid=self.env.user.id,
+                    creator_uid=creator_id,
+                    details_html=changes_html,
+                    border_color="#ffc107" # Warning/Yellow
+                )
 
                 self.env['mail.message'].create({
-                    'body': f"""
-                        <div style="color:#555; border-left:3px solid #6c757d; padding-left:10px;">
-                            <small>
-                                <i>✎ Actividad editada por {self.env.user.name} el {current_time}</i>
-                            </small>
-                            <ul style="margin:6px 0 0 15px; padding:0;">
-                                {''.join(changes)}
-                            </ul>
-                        </div>
-                    """,
+                    'body': formatted_message,
                     'model': activity.res_model,
                     'res_id': activity.res_id,
                     'message_type': 'notification',
@@ -230,15 +275,31 @@ class MailActivity(models.Model):
                     current_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
                     create_time = fields.Datetime.to_datetime(activity.create_date).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
 
+                    creator = getattr(activity, 'create_uid', None)
+                    creator_name = getattr(creator, 'name', 'Unknown') if creator else 'Unknown'
+                    creator_id = getattr(creator, 'id', None) if creator else None
+
+                    details_html = f"""
+                    <div style="font-size: 0.9em; color: #555;">
+                        <b>Asunto:</b> {activity.summary or activity.activity_type_id.name}<br/>
+                        <b>Nota:</b> {activity.note or 'Sin nota'}
+                    </div>
+                    """
+
+                    formatted_message = self._get_html_layout(
+                        action_title="❌ <strong>Actividad cancelada</strong>",
+                        user_name=self.env.user.name,
+                        current_time=current_time,
+                        create_time=create_time,
+                        creator_name=creator_name,
+                        current_uid=self.env.user.id,
+                        creator_uid=creator_id,
+                        details_html=details_html,
+                        border_color="#dc3545" # Red
+                    )
+
                     self.env['mail.message'].create({
-                        'body': f"""
-                            <div style="color: #666666; border-left: 3px solid #ccc; padding-left: 10px;">
-                                <small><i>🗙 Activity canceled by {self.env.user.name} el {current_time}</i></small>
-                                <br/><b>Asunto:</b> {activity.summary or activity.activity_type_id.name}
-                                <br/><small><b>Activity was created:</b> {create_time}</small>
-                                <br/><span style="font-size: 0.9em;">Nota: {activity.note or 'Sin nota'}</span>
-                            </div>
-                        """,
+                        'body': formatted_message,
                         'model': activity.res_model,
                         'res_id': activity.res_id,
                         'message_type': 'notification',
