@@ -441,3 +441,51 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
+
+from odoo.http import request
+
+class IrBinary(models.AbstractModel):
+    _inherit = "ir.binary"
+
+    def _record_to_stream(self, record, field_name):
+        if not self.env.su and request and request.params.get("download"):
+            user = self.env.user
+            if user.has_group("project.group_project_user") and not user.has_group(
+                "project.group_project_manager"
+            ):
+                model_name = record._name
+                res_id = record.id
+
+                # Attachments connected to project/task
+                if model_name == "ir.attachment" and record.res_model in [
+                    "project.project",
+                    "project.task",
+                ]:
+                    target_model = record.res_model
+                    target_id = record.res_id
+                    target_record = self.env[target_model].sudo().browse(target_id).exists()
+
+                    if target_model == "project.project":
+                        if target_record and target_record.user_id != user:
+                            raise AccessError(
+                                _("You can only download attachments for projects where you are the project responsible.")
+                            )
+                    elif target_model == "project.task":
+                        if target_record and target_record.project_id.user_id != user and user not in target_record.user_ids:
+                            raise AccessError(
+                                _("You can only download attachments for tasks where you are the project responsible or a task assignee.")
+                            )
+
+                # Directly on project/task models
+                elif model_name == "project.project":
+                    if record.user_id != user:
+                        raise AccessError(
+                            _("You can only download attachments for projects where you are the project responsible.")
+                        )
+                elif model_name == "project.task":
+                    if record.project_id.user_id != user and user not in record.user_ids:
+                        raise AccessError(
+                            _("You can only download attachments for tasks where you are the project responsible or a task assignee.")
+                        )
+
+        return super()._record_to_stream(record, field_name)
