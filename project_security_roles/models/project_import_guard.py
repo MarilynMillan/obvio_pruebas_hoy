@@ -1,5 +1,6 @@
 from odoo import _, api, models, Command
 from odoo.exceptions import AccessError, UserError
+from odoo.http import request
 
 
 class ProjectImportGuardMixin(models.AbstractModel):
@@ -441,3 +442,52 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
+
+
+class IrBinary(models.AbstractModel):
+    _inherit = 'ir.binary'
+
+    def _record_to_stream(self, record, field_name):
+        res = super()._record_to_stream(record, field_name)
+        if self.env.su:
+            return res
+
+        user = self.env.user
+        if user.has_group("project.group_project_user"):
+            if request and request.params.get('download'):
+                # Implementation of _is_allowed_project_attachment_target logic
+                model_name = record._name
+                res_id = record.id
+
+                # We need to know if the target record (what is being downloaded)
+                # is part of the guarded models
+                guarded_models = {
+                    "project.project",
+                    "project.task",
+                    "project.milestone",
+                    "project.update",
+                    "ir.attachment" # If they are downloading an attachment directly
+                }
+
+                # If downloading an ir.attachment, check its target
+                if model_name == "ir.attachment":
+                    model_name = record.res_model
+                    res_id = record.res_id
+
+                if model_name in guarded_models and res_id:
+                    target_record = self.env[model_name].sudo().browse(res_id).exists()
+                    if target_record:
+                        is_allowed = False
+                        if model_name == "project.project":
+                            is_allowed = target_record.user_id == user
+                        elif model_name == "project.task":
+                            is_allowed = target_record.project_id.user_id == user or user in target_record.user_ids
+                        else:
+                            is_allowed = target_record.project_id.user_id == user
+
+                        if not is_allowed:
+                            raise AccessError(
+                                _("You cannot download attachments from project records where you are only a follower.")
+                            )
+
+        return res
