@@ -441,3 +441,23 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
+
+from odoo.http import request
+
+class IrBinary(models.AbstractModel):
+    _inherit = "ir.binary"
+
+    def _record_to_stream(self, record, field_name):
+        res = super()._record_to_stream(record, field_name)
+        if request and request.params.get("download"):
+            user = self.env.user
+            if user.has_group("project.group_project_user") and not user.has_group("base.group_system"):
+                if record._name == "ir.attachment":
+                    model_name = record.res_model
+                    res_id = record.res_id
+                    attachment_model = self.env["ir.attachment"]
+                    if hasattr(attachment_model, "_PROJECT_GUARDED_MODELS"):
+                        guarded_models = attachment_model._PROJECT_GUARDED_MODELS
+                        if model_name in guarded_models and not attachment_model._is_allowed_project_attachment_target(model_name, res_id, user):
+                            raise AccessError(_("No tienes permisos para descargar adjuntos de este proyecto o tarea."))
+        return res
