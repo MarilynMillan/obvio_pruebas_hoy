@@ -19,13 +19,17 @@ class MailMessage(models.Model):
 
             user_tz = pytz.timezone(self.env.user.tz or 'UTC')
             current_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+            create_time = fields.Datetime.to_datetime(record.create_date).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S') if record.create_date else 'Desconocido'
+            creator_name = record.create_uid.name or 'Desconocido'
+            user_name = self.env.user.name or 'Desconocido'
 
             new_body = f"""
-                <div class="is_deleted_message" style="background-color: #fff5f5; border: 1px solid #ffcccc; padding: 10px; border-radius: 5px; color: #a94442;">
-                    <div style="font-weight: bold; margin-bottom: 5px;">🗑️ MENSAJE ELIMINADO</div>
-                    <small style="color: #666;">Por {self.env.user.name} el {current_time}</small>
-                    <hr style="border: 0; border-top: 1px solid #ffcccc; margin: 5px 0;"/>
-                    <div style="text-decoration: line-through; color: #999; font-style: italic;">
+                <div class="is_deleted_message" style="color: #555; border-left: 3px solid #6c757d; padding-left: 10px; background-color: #fcfcfc; padding: 5px; margin-bottom: 5px;">
+                    <small>
+                        <i>🗑️ Mensaje eliminado por {user_name} el {current_time}</i><br/>
+                        <i>📅 Creado originalmente por {creator_name} el {create_time}</i>
+                    </small>
+                    <div style="margin-top: 5px; text-decoration: line-through; color: #999; font-style: italic;">
                         {record.body or ''}
                     </div>
                 </div>
@@ -64,13 +68,20 @@ class MailMessage(models.Model):
 
                 user_tz = pytz.timezone(self.env.user.tz or 'UTC')
                 current_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+                create_time = fields.Datetime.to_datetime(record.create_date).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S') if record.create_date else 'Desconocido'
+                creator_name = record.create_uid.name or 'Desconocido'
+                user_name = self.env.user.name or 'Desconocido'
 
                 new_body = f"""{new_content}
     {marker}
     <div style="margin-top: 10px; border-top: 1px solid #eee; padding-top: 5px;">
-        <div style="color: #555; font-size: 0.8em; background-color: #fcfcfc; padding: 5px; border-left: 2px solid #ddd;">
-            <i>✎ Before (Editado por {self.env.user.name} el {current_time}):</i>
-            <div style="color: #888; padding-left: 10px; font-style: italic;">
+        <div style="color: #555; border-left: 3px solid #6c757d; padding-left: 10px; background-color: #fcfcfc; padding: 5px; margin-bottom: 5px;">
+            <small>
+                <i>✎ Mensaje editado por {user_name} el {current_time}</i><br/>
+                <i>📅 Creado originalmente por {creator_name} el {create_time}</i>
+            </small>
+            <div style="margin-top: 5px; color: #888; font-style: italic;">
+                <i>Anterior:</i><br/>
                 {old_content}
             </div>
         </div>
@@ -114,23 +125,31 @@ class MailActivity(models.Model):
     def _action_done(self, feedback=False, attachment_ids=None):
         user_tz = pytz.timezone(self.env.user.tz or 'UTC')
         now_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+        user_name = self.env.user.name or 'Desconocido'
+        content = feedback or ''
 
         messages = []
-
-        if feedback:
-            messages.append(feedback)
 
         for activity in self:
             create_time = fields.Datetime.to_datetime(
                 activity.create_date
-            ).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+            ).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S') if activity.create_date else 'Desconocido'
+            creator_name = activity.create_uid.name or 'Desconocido'
 
-            messages.append(f"""
-    📅 Created: {create_time}
-    ✅ Finished: {now_time}
-    """)
+            html_msg = f"""
+                <div style="color: #555; border-left: 3px solid #6c757d; padding-left: 10px; background-color: #fcfcfc; padding: 5px; margin-bottom: 5px;">
+                    <small>
+                        <i>✅ Actividad marcada como hecha por {user_name} el {now_time}</i><br/>
+                        <i>📅 Creada originalmente por {creator_name} el {create_time}</i>
+                    </small>
+                    <div style="margin-top: 5px; color: #333;">
+                        {content}
+                    </div>
+                </div>
+            """
+            messages.append(html_msg)
 
-        full_message = "\n".join(messages)
+        full_message = "".join(messages)
 
         return super(
             MailActivity,
@@ -203,14 +222,18 @@ class MailActivity(models.Model):
             if changes:
                 user_tz = pytz.timezone(self.env.user.tz or 'UTC')
                 current_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+                create_time = fields.Datetime.to_datetime(activity.create_date).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S') if activity.create_date else 'Desconocido'
+                creator_name = activity.create_uid.name or 'Desconocido'
+                user_name = self.env.user.name or 'Desconocido'
 
                 self.env['mail.message'].create({
                     'body': f"""
-                        <div style="color:#555; border-left:3px solid #6c757d; padding-left:10px;">
+                        <div style="color: #555; border-left: 3px solid #6c757d; padding-left: 10px; background-color: #fcfcfc; padding: 5px; margin-bottom: 5px;">
                             <small>
-                                <i>✎ Actividad editada por {self.env.user.name} el {current_time}</i>
+                                <i>✎ Actividad editada por {user_name} el {current_time}</i><br/>
+                                <i>📅 Creada originalmente por {creator_name} el {create_time}</i>
                             </small>
-                            <ul style="margin:6px 0 0 15px; padding:0;">
+                            <ul style="margin:6px 0 0 15px; padding:0; color: #333;">
                                 {''.join(changes)}
                             </ul>
                         </div>
@@ -228,15 +251,21 @@ class MailActivity(models.Model):
                 if activity.res_model == 'project.task':
                     user_tz = pytz.timezone(self.env.user.tz or 'UTC')
                     current_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
-                    create_time = fields.Datetime.to_datetime(activity.create_date).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+                    create_time = fields.Datetime.to_datetime(activity.create_date).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S') if activity.create_date else 'Desconocido'
+                    creator_name = activity.create_uid.name or 'Desconocido'
+                    user_name = self.env.user.name or 'Desconocido'
 
                     self.env['mail.message'].create({
                         'body': f"""
-                            <div style="color: #666666; border-left: 3px solid #ccc; padding-left: 10px;">
-                                <small><i>🗙 Activity canceled by {self.env.user.name} el {current_time}</i></small>
-                                <br/><b>Asunto:</b> {activity.summary or activity.activity_type_id.name}
-                                <br/><small><b>Activity was created:</b> {create_time}</small>
-                                <br/><span style="font-size: 0.9em;">Nota: {activity.note or 'Sin nota'}</span>
+                            <div style="color: #555; border-left: 3px solid #6c757d; padding-left: 10px; background-color: #fcfcfc; padding: 5px; margin-bottom: 5px;">
+                                <small>
+                                    <i>❌ Actividad cancelada por {user_name} el {current_time}</i><br/>
+                                    <i>📅 Creada originalmente por {creator_name} el {create_time}</i>
+                                </small>
+                                <div style="margin-top: 5px; color: #333;">
+                                    <b>Asunto:</b> {activity.summary or activity.activity_type_id.name}<br/>
+                                    <span style="font-size: 0.9em;">Nota: {activity.note or 'Sin nota'}</span>
+                                </div>
                             </div>
                         """,
                         'model': activity.res_model,
