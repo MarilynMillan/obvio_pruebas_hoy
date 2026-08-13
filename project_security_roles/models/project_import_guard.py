@@ -1,5 +1,37 @@
 from odoo import _, api, models, Command
 from odoo.exceptions import AccessError, UserError
+from odoo.http import request
+
+
+class IrBinary(models.AbstractModel):
+    _inherit = 'ir.binary'
+
+    def _record_to_stream(self, record, field_name):
+        # We intercept only when trying to download the file directly
+        if request and request.params.get('download'):
+            user = self.env.user
+            if user.has_group("project.group_project_user") and not user.has_group(
+                "project.group_project_manager"
+            ):
+                # Identify the target record the attachment/binary is tied to
+                if record._name == 'ir.attachment':
+                    target_model = record.res_model
+                    target_res_id = record.res_id
+                else:
+                    target_model = record._name
+                    target_res_id = record.id
+
+                # If the target is one of our protected project models
+                if target_model in self.env['ir.attachment']._PROJECT_GUARDED_MODELS:
+                    is_allowed = self.env['ir.attachment']._is_allowed_project_attachment_target(
+                        target_model, target_res_id, user
+                    )
+                    if not is_allowed:
+                        raise AccessError(
+                            _("No tienes permiso para descargar archivos adjuntos de tareas/proyectos en los que solo eres seguidor.")
+                        )
+
+        return super()._record_to_stream(record, field_name)
 
 
 class ProjectImportGuardMixin(models.AbstractModel):
