@@ -1,5 +1,6 @@
 from odoo import _, api, models, Command
 from odoo.exceptions import AccessError, UserError
+from odoo.http import request
 
 
 class ProjectImportGuardMixin(models.AbstractModel):
@@ -441,3 +442,43 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
+
+class IrBinary(models.AbstractModel):
+    _inherit = "ir.binary"
+
+    def _record_to_stream(self, record, field_name):
+        user = self.env.user
+
+        # We only apply the restriction if it's a download request.
+        # Check if request exists to avoid errors in contexts where it's not present (like CLI/cron).
+        is_download = False
+        try:
+            if request and request.params.get('download'):
+                is_download = True
+        except RuntimeError:
+            pass # working outside of request context
+
+        if is_download and user.has_group("project.group_project_user") and not user._is_admin() and not user.has_group("project.group_project_manager"):
+            # Use logic similar to _check_project_user_attachment_guard
+            model_name = record._name
+            res_id = record.id
+
+            # Since the record here might be the actual target model or an ir.attachment,
+            # we need to ensure we're checking against the right model logic.
+            # If the user tries to download an attachment, it typically goes through ir.attachment.
+            attachment_env = self.env['ir.attachment']
+
+            if model_name == 'ir.attachment':
+                target_model_name = record.res_model
+                target_res_id = record.res_id
+            else:
+                target_model_name = model_name
+                target_res_id = res_id
+
+            if target_model_name in attachment_env._PROJECT_GUARDED_MODELS:
+                if not attachment_env._is_allowed_project_attachment_target(target_model_name, target_res_id, user):
+                    raise AccessError(
+                        _("You can only download attachments on project records where you are the project responsible or task assignee.")
+                    )
+
+        return super()._record_to_stream(record, field_name)
