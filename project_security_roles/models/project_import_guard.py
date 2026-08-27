@@ -1,3 +1,4 @@
+from odoo.http import request
 from odoo import _, api, models, Command
 from odoo.exceptions import AccessError, UserError
 
@@ -441,3 +442,41 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
+
+
+class IrBinary(models.AbstractModel):
+    _inherit = 'ir.binary'
+
+    def _record_to_stream(self, record, field_name):
+        user = self.env.user
+
+        # Check if admin
+        is_admin = False
+        try:
+            is_admin = user._is_admin()
+        except AttributeError:
+            is_admin = user.has_group('base.group_erp_manager') or user.id == 1
+
+        if not is_admin and user.has_group("project.group_project_user") and not user.has_group("project.group_project_manager"):
+            try:
+                if request and request.params and request.params.get('download'):
+                    model_name = record._name
+                    res_id = record.id
+
+                    if model_name == 'ir.attachment':
+                        target_model = record.res_model
+                        target_res_id = record.res_id
+                    else:
+                        target_model = model_name
+                        target_res_id = res_id
+
+                    guarded_models = self.env['ir.attachment']._PROJECT_GUARDED_MODELS
+
+                    if target_model in guarded_models:
+                        is_allowed = self.env['ir.attachment']._is_allowed_project_attachment_target(target_model, target_res_id, user)
+                        if not is_allowed:
+                            raise AccessError(_("You are not allowed to download attachments for this project/task as you are only a follower."))
+            except RuntimeError:
+                pass # No request context (e.g., cron or tests)
+
+        return super()._record_to_stream(record, field_name)
