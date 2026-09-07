@@ -1,4 +1,5 @@
 from odoo import _, api, models, Command
+from odoo.http import request
 from odoo.exceptions import AccessError, UserError
 
 
@@ -317,6 +318,32 @@ class MailMessage(models.Model):
         candidates = [(message.model, message.res_id) for message in self]
         self._check_project_user_message_manage_access(candidates)
         return super().unlink()
+
+
+class IrBinary(models.AbstractModel):
+    _inherit = "ir.binary"
+
+    def _record_to_stream(self, record, field_name):
+        if record._name == "ir.attachment":
+            try:
+                is_download = request.params.get("download")
+            except RuntimeError:
+                is_download = False
+
+            if is_download:
+                user = self.env.user
+                if user.has_group("project.group_project_user") and not user.has_group("project.group_project_manager"):
+                    model_name = record.res_model
+                    res_id = record.res_id
+
+                    if model_name in self.env["ir.attachment"]._PROJECT_GUARDED_MODELS:
+                        is_allowed = self.env["ir.attachment"]._is_allowed_project_attachment_target(model_name, res_id, user)
+                        if not is_allowed:
+                            raise AccessError(
+                                _("You cannot download attachments for project records where you are not the project responsible or task assignee.")
+                            )
+
+        return super()._record_to_stream(record, field_name)
 
 
 class MailActivity(models.Model):
