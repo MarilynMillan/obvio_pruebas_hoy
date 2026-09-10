@@ -1,4 +1,5 @@
 from odoo import _, api, models, Command
+from odoo.http import request
 from odoo.exceptions import AccessError, UserError
 
 
@@ -441,3 +442,46 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
+
+
+class IrBinary(models.AbstractModel):
+    _inherit = "ir.binary"
+
+    def _record_to_stream(self, record, field_name):
+        res = super()._record_to_stream(record, field_name)
+
+        try:
+            is_download = request.params.get('download')
+        except RuntimeError:
+            is_download = False
+
+        if is_download:
+            user = self.env.user
+            if user.has_group("project.group_project_user"): # Also includes project_manager by odoo's inheritance or we can just check if they have the group
+                # Wait, the rule says check if user is Project Manager or Project User. Actually, if they are admin they bypass.
+                # Let's check _is_admin() fallback
+                is_admin = False
+                try:
+                    is_admin = user._is_admin()
+                except AttributeError:
+                    is_admin = user.has_group('base.group_erp_manager') or user.id == 1
+
+                if not is_admin:
+                    model_name = record._name
+                    res_id = record.id
+                    # Let's check if the target model is guarded
+                    guarded_models = {
+                        "project.project",
+                        "project.task",
+                        "project.milestone",
+                        "project.update",
+                    }
+                    if model_name == "ir.attachment":
+                        model_name = record.res_model
+                        res_id = record.res_id
+
+                    if model_name in guarded_models:
+                        if not self.env['ir.attachment']._is_allowed_project_attachment_target(model_name, res_id, user):
+                            raise AccessError(_("You are not allowed to download attachments from this project/task as you are only a follower."))
+
+        return res
