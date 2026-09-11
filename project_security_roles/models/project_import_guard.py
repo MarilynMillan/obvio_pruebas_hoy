@@ -441,3 +441,37 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
+
+class IrBinary(models.AbstractModel):
+    _inherit = "ir.binary"
+
+    def _record_to_stream(self, record, field_name):
+        try:
+            from odoo.http import request
+            if request and hasattr(request, 'params') and request.params.get('download'):
+                user = self.env.user
+
+                # Excepcion para superusuario o admin total
+                if user.has_group('base.group_erp_manager') or user.id == 1:
+                    return super()._record_to_stream(record, field_name)
+
+                # Si el usuario es de proyecto, validamos su acceso
+                if user.has_group("project.group_project_user"):
+                    model_name = record._name
+                    res_id = record.id
+
+                    if model_name == 'ir.attachment':
+                        model_name = record.res_model
+                        res_id = record.res_id
+
+                    # Validar si es un modelo restringido usando la lógica de IrAttachment
+                    if model_name in self.env['ir.attachment']._PROJECT_GUARDED_MODELS:
+                        if not self.env['ir.attachment']._is_allowed_project_attachment_target(model_name, res_id, user):
+                            raise AccessError(
+                                _("You are not allowed to download attachments from projects or tasks where you are only a follower.")
+                            )
+        except RuntimeError:
+            # RuntimeError occurs if accessed outside an active HTTP request context
+            pass
+
+        return super()._record_to_stream(record, field_name)
