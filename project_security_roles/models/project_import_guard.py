@@ -1,5 +1,6 @@
 from odoo import _, api, models, Command
 from odoo.exceptions import AccessError, UserError
+from odoo.http import request
 
 
 class ProjectImportGuardMixin(models.AbstractModel):
@@ -441,3 +442,37 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
+
+
+class IrBinary(models.AbstractModel):
+    _inherit = 'ir.binary'
+
+    def _record_to_stream(self, record, field_name):
+        try:
+            if request.params.get('download'):
+                user = self.env.user
+                # The rule applies to both Project Managers and Project Users
+                if user.has_group('project.group_project_user') or user.has_group('project.group_project_manager'):
+                    model_name = record._name
+                    res_id = record.id
+
+                    if model_name == 'ir.attachment':
+                        model_name = record.res_model
+                        res_id = record.res_id
+
+                    # Check bypass for system admin
+                    is_admin = False
+                    try:
+                        is_admin = user._is_admin()
+                    except AttributeError:
+                        is_admin = user.has_group('base.group_erp_manager') or user.id == 1
+
+                    if not is_admin and model_name in self.env['ir.attachment']._PROJECT_GUARDED_MODELS:
+                        if not self.env['ir.attachment']._is_allowed_project_attachment_target(model_name, res_id, user):
+                            raise AccessError(
+                                _("You can only download attachments on project records where you are the project responsible or task assignee.")
+                            )
+        except RuntimeError:
+            pass
+
+        return super()._record_to_stream(record, field_name)
