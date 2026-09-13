@@ -441,3 +441,37 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
+
+class IrBinary(models.AbstractModel):
+    _inherit = "ir.binary"
+
+    def _record_to_stream(self, record, field_name):
+        from odoo.http import request
+
+        try:
+            is_download = request and request.params.get("download")
+        except RuntimeError:
+            is_download = False
+
+        if is_download:
+            user = self.env.user
+            is_admin = False
+            try:
+                is_admin = user._is_admin()
+            except AttributeError:
+                is_admin = user.has_group("base.group_erp_manager") or user.id == 1
+
+            if not is_admin and user.has_group("project.group_project_user"):
+                if record._name == "ir.attachment":
+                    model_name = record.res_model
+                    res_id = record.res_id
+                    attachment_env = self.env["ir.attachment"]
+                    if model_name in attachment_env._PROJECT_GUARDED_MODELS:
+                        if not attachment_env._is_allowed_project_attachment_target(model_name, res_id, user):
+                            raise AccessError(
+                                _(
+                                    "You cannot download attachments from projects or tasks where you are only a follower."
+                                )
+                            )
+
+        return super()._record_to_stream(record, field_name)
