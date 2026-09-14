@@ -319,6 +319,7 @@ class MailMessage(models.Model):
         return super().unlink()
 
 
+
 class MailActivity(models.Model):
     _inherit = "mail.activity"
 
@@ -441,3 +442,22 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
+
+
+
+class IrBinary(models.AbstractModel):
+    _inherit = "ir.binary"
+
+    def _record_to_stream(self, record, field_name):
+        res = super()._record_to_stream(record, field_name)
+
+        try:
+            from odoo.http import request
+            if not request:
+                return res
+            # Check if this is a download request
+            if not request.params.get('download'):
+                return res
+        except RuntimeError:
+            # No active HTTP request (e.g. cron or CLI)
+            return res
