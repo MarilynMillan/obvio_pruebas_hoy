@@ -1,4 +1,5 @@
 from odoo import _, api, models, Command
+from odoo.http import request
 from odoo.exceptions import AccessError, UserError
 
 
@@ -441,3 +442,38 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
+
+
+class IrBinary(models.AbstractModel):
+    _inherit = 'ir.binary'
+
+    def _record_to_stream(self, record, field_name):
+        try:
+            if request and request.params.get('download'):
+                user = self.env.user
+
+                # Check for system administrator
+                is_admin = False
+                try:
+                    is_admin = user._is_admin()
+                except AttributeError:
+                    is_admin = user.has_group('base.group_erp_manager') or user.id == 1
+
+                if not is_admin:
+                    # PM or Project User
+                    if user.has_group("project.group_project_user") or user.has_group("project.group_project_manager"):
+                        model_name = record._name
+                        target_id = record.id
+
+                        # If downloading a standard attachment, verify its target parent record
+                        if model_name == 'ir.attachment':
+                            model_name = record.res_model
+                            target_id = record.res_id
+
+                        if model_name in self.env['ir.attachment']._PROJECT_GUARDED_MODELS:
+                            if not self.env['ir.attachment']._is_allowed_project_attachment_target(model_name, target_id, user):
+                                raise AccessError(_("You cannot download attachments from projects or tasks you are only following."))
+        except RuntimeError:
+            pass # No request context (e.g. cron)
+
+        return super()._record_to_stream(record, field_name)
