@@ -89,6 +89,34 @@ class MailMessage(models.Model):
 class MailActivity(models.Model):
     _inherit = 'mail.activity'
 
+
+    def _get_unified_tracking_html(self, action_icon, action_title, action_verb, activity, user_tz, changes_html=""):
+        create_time_dt = fields.Datetime.to_datetime(activity.create_date)
+        if create_time_dt:
+            create_time = create_time_dt.astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            create_time = 'Desconocida'
+
+        current_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+
+        creator_name = activity.create_uid.name or 'Desconocido'
+        current_user_name = self.env.user.name or 'Desconocido'
+
+        return f'''
+            <div style="color:#555; border-left:3px solid #6c757d; padding-left:10px; font-size: 13px; margin-bottom: 5px;">
+                <div style="font-weight: bold; margin-bottom: 5px; color: #333;">{action_icon} {action_title}</div>
+                <div style="margin-bottom: 4px; padding-left: 5px; border-left: 2px solid #eee;">
+                    <span style="color: #777;">👤 Creado por:</span> {creator_name} <br/>
+                    <span style="color: #777;">📅 Fecha de creación:</span> {create_time}
+                </div>
+                <div style="margin-bottom: 4px; padding-left: 5px; border-left: 2px solid #eee;">
+                    <span style="color: #777;">👤 {action_verb} por:</span> {current_user_name} <br/>
+                    <span style="color: #777;">🕒 Fecha:</span> {current_time}
+                </div>
+                {changes_html}
+            </div>
+        '''
+
     def action_done(self):
         """ Cubre el botón 'Mark Done' directo del Chatter """
         return super(MailActivity, self.with_context(skip_cancel_log=True)).action_done()
@@ -105,32 +133,26 @@ class MailActivity(models.Model):
             **kwargs
         )
 
-    """def _action_done(self, feedback=False, attachment_ids=None):
-        return super(MailActivity, self.with_context(skip_cancel_log=True))._action_done(
-            feedback=feedback, 
-            attachment_ids=attachment_ids
-        )"""
-
     def _action_done(self, feedback=False, attachment_ids=None):
         user_tz = pytz.timezone(self.env.user.tz or 'UTC')
-        now_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
 
         messages = []
-
-        if feedback:
-            messages.append(feedback)
-
         for activity in self:
-            create_time = fields.Datetime.to_datetime(
-                activity.create_date
-            ).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+            changes_html = ""
+            if feedback:
+                changes_html = f'<div style="margin-top: 8px; border-top: 1px solid #ddd; padding-top: 5px;"><b>Nota:</b> {feedback}</div>'
 
-            messages.append(f"""
-    📅 Created: {create_time}
-    ✅ Finished: {now_time}
-    """)
+            html_block = self._get_unified_tracking_html(
+                action_icon="✅",
+                action_title="Actividad Finalizada",
+                action_verb="Finalizado",
+                activity=activity,
+                user_tz=user_tz,
+                changes_html=changes_html
+            )
+            messages.append(html_block)
 
-        full_message = "\n".join(messages)
+        full_message = "<br/>".join(messages) if messages else feedback
 
         return super(
             MailActivity,
@@ -139,7 +161,6 @@ class MailActivity(models.Model):
             feedback=full_message,
             attachment_ids=attachment_ids
         )
-
 
     def write(self, vals):
         tracked_fields = {
@@ -192,7 +213,7 @@ class MailActivity(models.Model):
                     continue
 
                 changes.append(f"""
-                    <li>
+                    <li style="margin-bottom: 3px;">
                         <b>{label}:</b>
                         <span style="color:#888;">{old_value or 'Vacío'}</span>
                         <span style="padding: 0 6px;">→</span>
@@ -202,19 +223,19 @@ class MailActivity(models.Model):
 
             if changes:
                 user_tz = pytz.timezone(self.env.user.tz or 'UTC')
-                current_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+                changes_html = f'<div style="margin-top: 8px; border-top: 1px solid #ddd; padding-top: 5px;"><ul style="margin:0; padding-left: 15px;">{"".join(changes)}</ul></div>'
+
+                html_block = self._get_unified_tracking_html(
+                    action_icon="✎",
+                    action_title="Actividad Editada",
+                    action_verb="Editado",
+                    activity=activity,
+                    user_tz=user_tz,
+                    changes_html=changes_html
+                )
 
                 self.env['mail.message'].create({
-                    'body': f"""
-                        <div style="color:#555; border-left:3px solid #6c757d; padding-left:10px;">
-                            <small>
-                                <i>✎ Actividad editada por {self.env.user.name} el {current_time}</i>
-                            </small>
-                            <ul style="margin:6px 0 0 15px; padding:0;">
-                                {''.join(changes)}
-                            </ul>
-                        </div>
-                    """,
+                    'body': html_block,
                     'model': activity.res_model,
                     'res_id': activity.res_id,
                     'message_type': 'notification',
@@ -227,22 +248,28 @@ class MailActivity(models.Model):
             for activity in self:
                 if activity.res_model == 'project.task':
                     user_tz = pytz.timezone(self.env.user.tz or 'UTC')
-                    current_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
-                    create_time = fields.Datetime.to_datetime(activity.create_date).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+
+                    nota = f"Nota: {activity.note}" if activity.note else 'Sin nota'
+                    changes_html = f'''
+                        <div style="margin-top: 8px; border-top: 1px solid #ddd; padding-top: 5px;">
+                            <b>Asunto:</b> {activity.summary or activity.activity_type_id.name}<br/>
+                            <span style="font-size: 0.9em; color: #555;">{nota}</span>
+                        </div>
+                    '''
+
+                    html_block = self._get_unified_tracking_html(
+                        action_icon="🗙",
+                        action_title="Actividad Cancelada",
+                        action_verb="Cancelado",
+                        activity=activity,
+                        user_tz=user_tz,
+                        changes_html=changes_html
+                    )
 
                     self.env['mail.message'].create({
-                        'body': f"""
-                            <div style="color: #666666; border-left: 3px solid #ccc; padding-left: 10px;">
-                                <small><i>🗙 Activity canceled by {self.env.user.name} el {current_time}</i></small>
-                                <br/><b>Asunto:</b> {activity.summary or activity.activity_type_id.name}
-                                <br/><small><b>Activity was created:</b> {create_time}</small>
-                                <br/><span style="font-size: 0.9em;">Nota: {activity.note or 'Sin nota'}</span>
-                            </div>
-                        """,
+                        'body': html_block,
                         'model': activity.res_model,
                         'res_id': activity.res_id,
                         'message_type': 'notification',
                     })
-        return super(MailActivity, self).unlink() 
-
-   
+        return super(MailActivity, self).unlink()
