@@ -1,5 +1,6 @@
 from odoo import _, api, models, Command
 from odoo.exceptions import AccessError, UserError
+from odoo.http import request
 
 
 class ProjectImportGuardMixin(models.AbstractModel):
@@ -441,3 +442,35 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
+
+
+
+class IrBinary(models.AbstractModel):
+    _inherit = "ir.binary"
+
+    def _record_to_stream(self, record, field_name):
+        # Allow requests without download param
+        is_download = False
+        try:
+            if request and hasattr(request, 'params'):
+                is_download = request.params.get('download')
+        except Exception:
+            pass
+
+        if is_download:
+            user = self.env.user
+            if not (user.has_group('base.group_erp_manager') or user.id == 1):
+                # The user requested that PMs also be restricted from downloading when they are only followers
+                # so we apply the check to all users (since admins are already excluded).
+                model_name = record._name
+                res_id = record.id
+
+                if model_name == 'ir.attachment':
+                    model_name = record.res_model
+                    res_id = record.res_id
+
+                if model_name in self.env['ir.attachment']._PROJECT_GUARDED_MODELS:
+                    if not self.env['ir.attachment']._is_allowed_project_attachment_target(model_name, res_id, user):
+                        raise AccessError(_("No puedes descargar archivos adjuntos de proyectos o tareas en los que solo eres seguidor. Solo puedes visualizarlos."))
+
+        return super()._record_to_stream(record, field_name)
