@@ -125,9 +125,16 @@ class MailActivity(models.Model):
                 activity.create_date
             ).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
 
+            creator_name = activity.create_uid.name or 'Desconocido'
+            processor_name = self.env.user.name or 'Desconocido'
+
+            creator_info = f" Creado por {creator_name}" if creator_name != processor_name else ""
+
             messages.append(f"""
-    📅 Created: {create_time}
-    ✅ Finished: {now_time}
+    <div style="color: #666666; border-left: 3px solid #28a745; padding-left: 10px; margin-bottom: 5px;">
+        <small><i>✅ Actividad procesada por {processor_name} el {now_time}</i></small>
+        <br/><small><b>📅 Fecha de creación:</b> {create_time}{creator_info}</small>
+    </div>
     """)
 
         full_message = "\n".join(messages)
@@ -203,13 +210,18 @@ class MailActivity(models.Model):
             if changes:
                 user_tz = pytz.timezone(self.env.user.tz or 'UTC')
                 current_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+                create_time = fields.Datetime.to_datetime(activity.create_date).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+
+                creator_name = activity.create_uid.name or 'Desconocido'
+                processor_name = self.env.user.name or 'Desconocido'
+
+                creator_info = f" Creado por {creator_name}" if creator_name != processor_name else ""
 
                 self.env['mail.message'].create({
                     'body': f"""
                         <div style="color:#555; border-left:3px solid #6c757d; padding-left:10px;">
-                            <small>
-                                <i>✎ Actividad editada por {self.env.user.name} el {current_time}</i>
-                            </small>
+                            <small><i>✎ Actividad editada por {processor_name} el {current_time}</i></small>
+                            <br/><small><b>📅 Fecha de creación:</b> {create_time}{creator_info}</small>
                             <ul style="margin:6px 0 0 15px; padding:0;">
                                 {''.join(changes)}
                             </ul>
@@ -230,12 +242,17 @@ class MailActivity(models.Model):
                     current_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
                     create_time = fields.Datetime.to_datetime(activity.create_date).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
 
+                    creator_name = activity.create_uid.name or 'Desconocido'
+                    processor_name = self.env.user.name or 'Desconocido'
+
+                    creator_info = f" Creado por {creator_name}" if creator_name != processor_name else ""
+
                     self.env['mail.message'].create({
                         'body': f"""
-                            <div style="color: #666666; border-left: 3px solid #ccc; padding-left: 10px;">
-                                <small><i>🗙 Activity canceled by {self.env.user.name} el {current_time}</i></small>
+                            <div style="color: #666666; border-left: 3px solid #dc3545; padding-left: 10px;">
+                                <small><i>❌ Actividad cancelada por {processor_name} el {current_time}</i></small>
+                                <br/><small><b>📅 Fecha de creación:</b> {create_time}{creator_info}</small>
                                 <br/><b>Asunto:</b> {activity.summary or activity.activity_type_id.name}
-                                <br/><small><b>Activity was created:</b> {create_time}</small>
                                 <br/><span style="font-size: 0.9em;">Nota: {activity.note or 'Sin nota'}</span>
                             </div>
                         """,
