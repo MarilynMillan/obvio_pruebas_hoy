@@ -441,3 +441,38 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
+
+
+class IrBinary(models.AbstractModel):
+    _inherit = "ir.binary"
+
+    def _record_to_stream(self, record, field_name):
+        from odoo.http import request
+        from odoo.exceptions import AccessError
+
+        try:
+            is_download = request and request.params.get('download')
+        except RuntimeError:
+            is_download = False
+
+        if is_download:
+            user = self.env.user
+            # Check if user is a PM (has base.group_user and project.group_project_user, but not erp_manager)
+            # Or if it's explicitly for project PMs (we'll follow the exact memory instruction)
+            is_admin = user.has_group('base.group_erp_manager') or user.id == 1
+            if user.has_group('project.group_project_user') and not is_admin:
+                if record._name == 'ir.attachment':
+                    model_name = record.res_model
+                    res_id = record.res_id
+                    if model_name in self.env['ir.attachment']._PROJECT_GUARDED_MODELS:
+                        if not self.env['ir.attachment']._is_allowed_project_attachment_target(model_name, res_id, user):
+                            raise AccessError(
+                                "No puedes descargar archivos adjuntos de tareas/proyectos en los que solo eres seguidor."
+                            )
+                elif record._name in self.env['ir.attachment']._PROJECT_GUARDED_MODELS:
+                    if not self.env['ir.attachment']._is_allowed_project_attachment_target(record._name, record.id, user):
+                        raise AccessError(
+                            "No puedes descargar archivos adjuntos de tareas/proyectos en los que solo eres seguidor."
+                        )
+
+        return super()._record_to_stream(record, field_name)

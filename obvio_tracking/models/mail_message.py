@@ -105,41 +105,44 @@ class MailActivity(models.Model):
             **kwargs
         )
 
-    """def _action_done(self, feedback=False, attachment_ids=None):
-        return super(MailActivity, self.with_context(skip_cancel_log=True))._action_done(
-            feedback=feedback, 
-            attachment_ids=attachment_ids
-        )"""
-
     def _action_done(self, feedback=False, attachment_ids=None):
         user_tz = pytz.timezone(self.env.user.tz or 'UTC')
-        now_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+        current_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
 
-        messages = []
-
-        if feedback:
-            messages.append(feedback)
+        # To merge results from super calls if there are multiple activities
+        result_record = self.env['mail.message']
 
         for activity in self:
             create_time = fields.Datetime.to_datetime(
                 activity.create_date
             ).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
 
-            messages.append(f"""
-    📅 Created: {create_time}
-    ✅ Finished: {now_time}
-    """)
+            creator_name = activity.create_uid.name or 'Usuario'
 
-        full_message = "\n".join(messages)
+            # The exact identical visual layout HTML for done
+            html_message = f'''
+                        <div style="color:#555; border-left:3px solid #6c757d; padding-left:10px;">
+                            <small>
+                                <i>✅ Actividad marcada como hecha por {self.env.user.name} el {current_time}</i><br/>
+                                <i style="color: #888;">(Creada originalmente por {creator_name} el {create_time})</i>
+                            </small>'''
 
-        return super(
-            MailActivity,
-            self.with_context(skip_cancel_log=True)
-        )._action_done(
-            feedback=full_message,
-            attachment_ids=attachment_ids
-        )
+            if feedback:
+                html_message += f'<br/><br/><div style="color: #333;">{feedback}</div>'
 
+            html_message += '</div>'
+
+            res = super(
+                MailActivity,
+                activity.with_context(skip_cancel_log=True)
+            )._action_done(
+                feedback=html_message,
+                attachment_ids=attachment_ids
+            )
+            if res:
+                result_record |= res
+
+        return result_record if result_record else super(MailActivity, self.with_context(skip_cancel_log=True))._action_done(feedback=feedback, attachment_ids=attachment_ids)
 
     def write(self, vals):
         tracked_fields = {
@@ -191,30 +194,33 @@ class MailActivity(models.Model):
                 if str(old_value).strip() == str(new_value).strip():
                     continue
 
-                changes.append(f"""
+                changes.append(f'''
                     <li>
                         <b>{label}:</b>
                         <span style="color:#888;">{old_value or 'Vacío'}</span>
                         <span style="padding: 0 6px;">→</span>
                         <span style="color:#222;">{new_value or 'Vacío'}</span>
                     </li>
-                """)
+                ''')
 
             if changes:
                 user_tz = pytz.timezone(self.env.user.tz or 'UTC')
                 current_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+                create_time = fields.Datetime.to_datetime(activity.create_date).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+                creator_name = activity.create_uid.name or 'Usuario'
 
                 self.env['mail.message'].create({
-                    'body': f"""
+                    'body': f'''
                         <div style="color:#555; border-left:3px solid #6c757d; padding-left:10px;">
                             <small>
-                                <i>✎ Actividad editada por {self.env.user.name} el {current_time}</i>
+                                <i>✎ Actividad editada por {self.env.user.name} el {current_time}</i><br/>
+                                <i style="color: #888;">(Creada originalmente por {creator_name} el {create_time})</i>
                             </small>
                             <ul style="margin:6px 0 0 15px; padding:0;">
                                 {''.join(changes)}
                             </ul>
                         </div>
-                    """,
+                    ''',
                     'model': activity.res_model,
                     'res_id': activity.res_id,
                     'message_type': 'notification',
@@ -229,20 +235,24 @@ class MailActivity(models.Model):
                     user_tz = pytz.timezone(self.env.user.tz or 'UTC')
                     current_time = fields.Datetime.now().astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
                     create_time = fields.Datetime.to_datetime(activity.create_date).astimezone(user_tz).strftime('%Y-%m-%d %H:%M:%S')
+                    creator_name = activity.create_uid.name or 'Usuario'
 
                     self.env['mail.message'].create({
-                        'body': f"""
-                            <div style="color: #666666; border-left: 3px solid #ccc; padding-left: 10px;">
-                                <small><i>🗙 Activity canceled by {self.env.user.name} el {current_time}</i></small>
-                                <br/><b>Asunto:</b> {activity.summary or activity.activity_type_id.name}
-                                <br/><small><b>Activity was created:</b> {create_time}</small>
-                                <br/><span style="font-size: 0.9em;">Nota: {activity.note or 'Sin nota'}</span>
-                            </div>
-                        """,
+                        'body': f'''
+                        <div style="color:#555; border-left:3px solid #6c757d; padding-left:10px;">
+                            <small>
+                                <i>🗙 Actividad cancelada por {self.env.user.name} el {current_time}</i><br/>
+                                <i style="color: #888;">(Creada originalmente por {creator_name} el {create_time})</i>
+                            </small>
+                            <br/><br/>
+                            <ul style="margin:6px 0 0 15px; padding:0;">
+                                <li><b>Asunto:</b> {activity.summary or activity.activity_type_id.name}</li>
+                                <li><b>Nota:</b> {activity.note or 'Sin nota'}</li>
+                            </ul>
+                        </div>
+                        ''',
                         'model': activity.res_model,
                         'res_id': activity.res_id,
                         'message_type': 'notification',
                     })
-        return super(MailActivity, self).unlink() 
-
-   
+        return super(MailActivity, self).unlink()
