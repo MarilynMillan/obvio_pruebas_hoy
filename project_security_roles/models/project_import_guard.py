@@ -1,4 +1,5 @@
 from odoo import _, api, models, Command
+from odoo.http import request
 from odoo.exceptions import AccessError, UserError
 
 
@@ -441,3 +442,28 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
+
+
+class IrBinary(models.AbstractModel):
+    _inherit = "ir.binary"
+
+    def _record_to_stream(self, record, field_name):
+        try:
+            if request and request.params.get("download"):
+                user = self.env.user
+                if user.has_group("project.group_project_user") and not (user.has_group("base.group_erp_manager") or user.id == 1):
+                    model_name = record.res_model if record._name == "ir.attachment" else record._name
+                    res_id = record.res_id if record._name == "ir.attachment" else record.id
+
+                    attachment_model = self.env["ir.attachment"]
+                    if model_name in attachment_model._PROJECT_GUARDED_MODELS:
+                        if not attachment_model._is_allowed_project_attachment_target(model_name, res_id, user):
+                            raise AccessError(
+                                _(
+                                    "No tienes permiso para descargar adjuntos de este proyecto o tarea."
+                                )
+                            )
+        except RuntimeError:
+            pass
+
+        return super()._record_to_stream(record, field_name)
