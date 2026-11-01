@@ -1,5 +1,6 @@
 from odoo import _, api, models, Command
 from odoo.exceptions import AccessError, UserError
+from odoo.http import request
 
 
 class ProjectImportGuardMixin(models.AbstractModel):
@@ -441,3 +442,30 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
+
+
+class IrBinary(models.AbstractModel):
+    _inherit = "ir.binary"
+
+    def _record_to_stream(self, record, field_name):
+        try:
+            # Check if this is a download request (not just a preview)
+            if request and request.params.get('download'):
+                user = self.env.user
+                if user.has_group('project.group_project_user') and not (user.has_group('base.group_erp_manager') or user.id == 1):
+                    # For attachments, check the target record they are attached to
+                    if record._name == 'ir.attachment':
+                        target_model = record.res_model
+                        target_id = record.res_id
+                    else:
+                        target_model = record._name
+                        target_id = record.id
+
+                    # Utilize the existing guard method from IrAttachment
+                    if not self.env['ir.attachment']._is_allowed_project_attachment_target(target_model, target_id, user):
+                        raise AccessError(_("Attachment download is restricted for Project Users on this record."))
+        except RuntimeError:
+            # Ignore RuntimeError when accessing request outside of an active HTTP request context (e.g. CLI, cron)
+            pass
+
+        return super()._record_to_stream(record, field_name)
