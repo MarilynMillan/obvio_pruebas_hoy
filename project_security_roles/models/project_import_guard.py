@@ -1,4 +1,5 @@
 from odoo import _, api, models, Command
+from odoo.http import request
 from odoo.exceptions import AccessError, UserError
 
 
@@ -441,3 +442,38 @@ class IrAttachment(models.Model):
                         )
                     )
         return super().unlink()
+
+
+class IrBinary(models.AbstractModel):
+    _inherit = "ir.binary"
+
+    def _record_to_stream(self, record, field_name):
+        try:
+            if request and request.params.get('download'):
+                user = self.env.user
+
+                # Resolving correct model and ID for attachments vs other records
+                target_model = record.res_model if record._name == 'ir.attachment' else record._name
+                target_id = record.res_id if record._name == 'ir.attachment' else record.id
+
+                # List of models we want to protect from downloading
+                guarded_models = {
+                    "project.project",
+                    "project.task",
+                    "project.milestone",
+                    "project.update",
+                    "res.partner", # Added to prevent downloading from third party records as requested
+                }
+
+                if target_model in guarded_models and target_id:
+                    # If user is NOT project_manager/admin
+                    is_admin = user.has_group('base.group_erp_manager') or user.id == 1
+                    is_manager = user.has_group("project.group_project_manager")
+
+                    if not (is_admin or is_manager):
+                        raise AccessError(_("Project users are not permitted to download attachments from this record. You can only view them."))
+        except RuntimeError:
+            # Safely ignore if there's no HTTP request context (e.g. cron/cli)
+            pass
+
+        return super()._record_to_stream(record, field_name)
