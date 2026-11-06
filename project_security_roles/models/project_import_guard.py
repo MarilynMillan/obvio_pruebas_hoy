@@ -1,5 +1,6 @@
 from odoo import _, api, models, Command
 from odoo.exceptions import AccessError, UserError
+from odoo.http import request
 
 
 class ProjectImportGuardMixin(models.AbstractModel):
@@ -59,99 +60,18 @@ class ProjectProject(models.Model):
         self.env["project.import.guard.mixin"]._check_project_user_import_guard()
         return super().load(fields, data)
 
-
 class ProjectTask(models.Model):
     _inherit = "project.task"
-
-    def _is_project_user_restricted(self):
-        user = self.env.user
-        return user.has_group("project.group_project_user") and not user.has_group(
-            "project.group_project_manager"
-        )
-
-    def _check_project_user_task_project_access_on_create(self, vals_list):
-        if not self._is_project_user_restricted():
-            return
-
-        user = self.env.user
-        project_ids = {vals.get("project_id") for vals in vals_list if vals.get("project_id")}
-        if not project_ids:
-            return
-
-        projects = self.env["project.project"].sudo().browse(list(project_ids)).exists()
-        projects_by_id = {project.id: project for project in projects}
-        for vals in vals_list:
-            project_id = vals.get("project_id")
-            if not project_id:
-                continue
-            project = projects_by_id.get(project_id)
-            if not project or project.user_id != user:
-                raise AccessError(
-                    _(
-                        "You can only create tasks in projects where you are the responsible."
-                    )
-                )
-
-    def _check_project_user_task_project_access_on_write(self, vals):
-        if not self._is_project_user_restricted():
-            return
-        if "project_id" not in vals:
-            return
-
-        new_project_id = vals.get("project_id")
-        if not new_project_id:
-            return
-
-        project = self.env["project.project"].sudo().browse(new_project_id).exists()
-        if not project or project.user_id != self.env.user:
-            raise AccessError(
-                _(
-                    "You can only move tasks to projects where you are the responsible."
-                )
-            )
-
-    def _is_user_task_manager(self, user):
-        self.ensure_one()
-        return self.project_id.user_id == user or user in self.user_ids
-
-    def _is_user_task_manager_by_id(self, task_id, user):
-        task = self.sudo().browse(task_id).exists()
-        return bool(task) and (task.project_id.user_id == user or user in task.user_ids)
-
-    def activity_schedule(self, act_type_xmlid="", date_deadline=None, summary="", note="", **act_values):
-        user = self.env.user
-        if user.has_group("project.group_project_user") and not user.has_group(
-            "project.group_project_manager"
-        ):
-            forbidden_ids = [
-                task_id for task_id in self.ids if not self._is_user_task_manager_by_id(task_id, user)
-            ]
-            if forbidden_ids:
-                raise AccessError(
-                    _(
-                        "You can only schedule activities on tasks where you are the project responsible or an assignee."
-                    )
-                )
-        return super().activity_schedule(
-            act_type_xmlid=act_type_xmlid,
-            date_deadline=date_deadline,
-            summary=summary,
-            note=note,
-            **act_values,
-        )
 
     def load(self, fields, data):
         self.env["project.import.guard.mixin"]._check_project_user_import_guard()
         return super().load(fields, data)
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        self._check_project_user_task_project_access_on_create(vals_list)
-        return super().create(vals_list)
-
-    def write(self, vals):
-        self._check_project_user_task_project_access_on_write(vals)
-        return super().write(vals)
+    def _is_user_task_manager_by_id(self, task_id, user):
+        task = self.sudo().browse(task_id).exists()
+        if not task:
+            return False
+        return task.project_id.user_id == user or user in task.user_ids
 
 
 class ProjectMilestone(models.Model):
@@ -170,21 +90,43 @@ class ProjectUpdate(models.Model):
         return super().load(fields, data)
 
 
+class ProjectTags(models.Model):
+    _inherit = "project.tags"
+
+    def load(self, fields, data):
+        self.env["project.import.guard.mixin"]._check_project_user_import_guard()
+        return super().load(fields, data)
+
+
 class ProjectTaskType(models.Model):
     _inherit = "project.task.type"
 
+    def load(self, fields, data):
+        self.env["project.import.guard.mixin"]._check_project_user_import_guard()
+        return super().load(fields, data)
+
     def _extract_project_ids_from_stage_vals(self, vals):
-        commands = vals.get("project_ids")
         project_ids = set()
-        if commands:
-            for command in commands:
+        if "project_ids" in vals:
+            for command in vals["project_ids"]:
                 if not isinstance(command, (list, tuple)) or not command:
                     continue
                 operation = command[0]
-                if operation == Command.SET:
-                    project_ids.update(
-                        pid for pid in (command[2] or []) if isinstance(pid, int) and not isinstance(pid, bool) and pid > 0
-                    )
+                if operation in (Command.CREATE, Command.UPDATE):
+                    pass
+                elif operation in (Command.DELETE, Command.UNLINK):
+                    pass
+                elif operation == Command.LINK:
+                    pid = command[1]
+                    if isinstance(pid, int) and not isinstance(pid, bool) and pid > 0:
+                        project_ids.add(pid)
+                elif operation == Command.SET:
+                    if len(command) > 2 and isinstance(command[2], (list, tuple)):
+                        project_ids.update(
+                            pid
+                            for pid in command[2]
+                            if isinstance(pid, int) and not isinstance(pid, bool) and pid > 0
+                        )
                 elif operation == Command.LINK:
                     pid = command[1]
                     if isinstance(pid, int) and not isinstance(pid, bool) and pid > 0:
@@ -356,6 +298,45 @@ class MailActivity(models.Model):
             vals_list.append(candidate_vals)
         self._check_project_task_activity_access(vals_list)
         return super().write(vals)
+
+
+class IrBinary(models.AbstractModel):
+    _inherit = 'ir.binary'
+
+    def _record_to_stream(self, record, field_name):
+        try:
+            if request and request.params.get('download'):
+                user = self.env.user
+
+                # Use standard 'has_group' first
+                is_admin = False
+                if user.id: # ensure it's not empty recordset
+                    is_admin = user.has_group('base.group_erp_manager') or user.id == 1
+                    try:
+                        # Sometimes odoo has user._is_admin(), we can check it
+                        is_admin = is_admin or user._is_admin()
+                    except AttributeError:
+                        pass
+
+                if user.has_group("project.group_project_user") and not user.has_group("project.group_project_manager") and not is_admin:
+                    model_name = record.res_model if record._name == 'ir.attachment' else record._name
+                    res_id = record.res_id if record._name == 'ir.attachment' else record.id
+
+                    if model_name in ['project.task', 'project.project']:
+                        target_record = self.env[model_name].sudo().browse(res_id).exists()
+                        if target_record:
+                            is_allowed = False
+                            if model_name == 'project.project':
+                                is_allowed = target_record.user_id == user
+                            elif model_name == 'project.task':
+                                is_allowed = target_record.project_id.user_id == user or user in target_record.user_ids
+
+                            if not is_allowed:
+                                raise AccessError(_("You are not allowed to download attachments for this project/task as you are only a follower."))
+        except RuntimeError:
+            pass # Not in HTTP request context
+
+        return super()._record_to_stream(record, field_name)
 
 
 class IrAttachment(models.Model):
